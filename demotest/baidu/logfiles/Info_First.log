@@ -1,0 +1,6 @@
+[Info]G:/users/workspace/GoProject/src/learngo/demotest/baidu/log/demo1/main.go:15: A Info message here
+[Debug]G:/users/workspace/GoProject/src/learngo/demotest/baidu/log/demo1/main.go:17: A Debug message here
+[Info]2019/02/14 20:05:55 A Info message here
+[Debug]2019/02/14 20:05:55 A Debug message here
+[Info]main.go:21: A Info message here
+[Debug]main.go:23: A Debug message here
