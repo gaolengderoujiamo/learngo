@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding"
@@ -13,8 +14,23 @@ import (
 	"golang.org/x/text/transform"
 )
 
+var rateLimiter = time.Tick(10 * time.Millisecond)
+
 func Fetch(url string) ([]byte, error) {
-	resp, err := http.Get(url)
+	<-rateLimiter
+	request, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Add("User-Agent",
+		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36")
+	//request.Header.Add("Host", "album.zhenai.com")
+	//cookie1 := &http.Cookie{Name: "sid", Value: "babb4716-d982-4272-9ae3-19c929b0494b", HttpOnly: true}
+	//request.AddCookie(cookie1)
+
+	client := http.Client{}
+	resp, err := client.Do(request)
+
 	if err != nil {
 		return nil, err
 	}

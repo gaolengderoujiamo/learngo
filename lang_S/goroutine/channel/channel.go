@@ -57,12 +57,14 @@ func channelClose() {
 	c <- 'b'
 	c <- 'c'
 	c <- 'd'
+	// channel由发送方close后, 接收方仍会收到数据
+	// 接收到的数据为具体类型的零值
 	close(c)
 	time.Sleep(time.Millisecond)
 }
 
 func main() {
-	//chanDemo()
+	chanDemo()
 	//bufferedChannel()
-	channelClose()
+	//channelClose()
 }

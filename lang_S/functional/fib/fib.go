@@ -15,6 +15,7 @@ func fibonacci() intGen {
 	}
 }
 
+// 为函数实现接口
 type intGen func() int
 
 func (g intGen) Read(p []byte) (n int, err error) {
@@ -23,6 +24,8 @@ func (g intGen) Read(p []byte) (n int, err error) {
 		return 0, io.EOF
 	}
 	s := fmt.Sprintf("%d\n", next)
+
+	// TODO: incorrect if p is too small
 	return strings.NewReader(s).Read(p)
 }
 

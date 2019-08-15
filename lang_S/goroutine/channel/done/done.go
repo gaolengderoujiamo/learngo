@@ -16,6 +16,9 @@ func doWorker(id int, w worker) {
 	}
 }
 
+// done为function, 由createWorker进行配置
+// doWorker仅负责调用worker的done()方法
+// 做到doWorker与内部done()所做的事情抽象掉
 type worker struct {
 	in   chan int
 	done func()

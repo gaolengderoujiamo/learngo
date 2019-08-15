@@ -51,11 +51,12 @@ func main() {
 	c := root.TraverseWithChannel()
 	maxVal := 0
 	for node := range c {
+		fmt.Printf("%d ", node.Val)
 		if node.Val > maxVal {
 			maxVal = node.Val
 		}
 	}
-	fmt.Println("max value:", maxVal)
+	fmt.Println("\nmax value:", maxVal)
 	//fmt.Println()
 	//myRoot := myTreeNode{&root}
 	//myRoot.postOrder()

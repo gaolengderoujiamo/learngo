@@ -3,6 +3,7 @@ package main
 import "fmt"
 
 func adder() func(int) int {
+	// 自由变量sum
 	sum := 0
 	return func(v int) int {
 		sum += v
