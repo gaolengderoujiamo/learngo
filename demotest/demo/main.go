@@ -5,18 +5,89 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var cwd string
 
 func main() {
-	//t1()
-	//t2()
-	//t3()
-	//t4()
-	//t5()
-	//selectTest()
-	deferTest()
+	//s := "httsp://asdsadsadsad"
+	//fmt.Println(VerifyURL(s))
+	c := make(chan int)
+
+	go func() {
+		if value, ok := <-c; ok {
+			fmt.Printf("#### %v\n", value)
+		} else {
+			fmt.Printf("channel closed[%d]", value)
+		}
+	}()
+
+	time.Sleep(3 * time.Second)
+
+	c <- 0
+
+	time.Sleep(10 * time.Second)
+
+}
+
+func VerifyURL(url string) string {
+	var buf strings.Builder
+	if strings.Index(url, "http") != 0 &&
+		strings.Index(url, "https") != 0 {
+		buf.WriteString("http://")
+	}
+	buf.WriteString(url)
+	return buf.String()
+}
+
+func d1() {
+	nums := [3]int{}
+	nums[0] = 1
+	n := nums[0]
+	n = 2
+	fmt.Printf("nums: %v\n", nums)
+	fmt.Printf("n: %d\n", n)
+}
+
+func demoA() {
+	months := [...]string{1: "J", 2: "W"}
+	fmt.Println(months)
+
+}
+
+func chandemo() {
+	strChan := make(chan string, 3)
+	syncChan := make(chan struct{})
+
+	go func() {
+
+		defer func() {
+			syncChan <- struct{}{}
+		}()
+
+		for v := range strChan {
+			fmt.Println(v)
+		}
+	}()
+
+	go func() {
+
+		defer func() {
+			syncChan <- struct{}{}
+		}()
+
+		for i := 0; i < 5; i++ {
+			strChan <- strconv.Itoa(i)
+			if i == 3 {
+				close(strChan)
+				break
+			}
+		}
+	}()
+
+	<-syncChan
+	<-syncChan
 }
 
 func deferFunc(name string, a, b int) int {
@@ -109,4 +180,28 @@ func t1() {
 	}
 	fmt.Println(age)
 
+}
+
+// 交易成功通知主体, 存于RabbitMQ中
+type Notification struct {
+	NotifyURL string               `json:"notify_url"`   // 交易成功通知地址
+	Body      *NotificationRequest `json:"request_body"` // 参数
+}
+
+// 推送交易通知request body
+type NotificationRequest struct {
+	TransactionID   string `json:"transaction_id"`    // 乐惠交易单号
+	OrderNO         string `json:"order_no"`          //合作伙伴订单号
+	UpstreamOrderNO string `json:"upstream_order_no"` // 微信/支付宝/银联订单号
+	MerchantOrderNO string `json:"merchant_order_no"` // 支付客户端显示的商户单号（由乐惠生成）
+	MerchantID      string `json:"merchant_id"`       // 商户ID
+	TerminalID      string `json:"terminal_id"`       // 终端ID
+	AppID           string `json:"app_id"`            // 微信/支付宝公众号或服务窗ID
+	BuyerID         string `json:"buyer_id"`          // 微信或支付宝的用户ID
+	Amount          uint64 `json:"amount"`            // 支付金额（分）
+	Status          string `json:"status"`            // 支付订单状态： 支付中 processing  支付成功 succeeded 支付失败 failed 交易关闭 closed
+	ClientType      string `json:"client_type"`       // 客户端类型： 微信 weixin 支付宝 alipay银联 unionpay京东 jdpay
+	TradeType       string `json:"trade_type"`        // 支付方式： JSAPI jspay 刷卡 micropay
+	CreatedAt       int64  `json:"created_at"`        // 交易创建时间
+	FinishedAt      int64  `json:"finished_at"`       // 交易完成时间
 }

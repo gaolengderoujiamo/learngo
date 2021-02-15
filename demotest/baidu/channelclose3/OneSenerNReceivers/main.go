@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"sync"
@@ -24,6 +25,7 @@ func main() {
 		for {
 			if value := rand.Intn(MaxRandomNumber); value == 0 {
 				// the only sender can close the channel safely.
+				fmt.Println("shut down")
 				close(dataCh)
 				return
 			} else {
